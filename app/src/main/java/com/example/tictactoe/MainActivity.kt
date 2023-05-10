@@ -6,23 +6,24 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    var playerXTurn = true // it is player X's turn at start of game
+    private lateinit var gameButtons: Array<Button> // array to hold all game buttons
+    private var playerXTurn = true // it's player X's turn at start of game
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // setup array of all game buttons
-        val gameButtons:Array<Button> = arrayOf(
-            findViewById<Button>(R.id.btnTopLeft),
-            findViewById<Button>(R.id.btnTopMiddle),
-            findViewById<Button>(R.id.btnTopRight),
-            findViewById<Button>(R.id.btnMiddleLeft),
-            findViewById<Button>(R.id.btnMiddle),
-            findViewById<Button>(R.id.btnMiddleRight),
-            findViewById<Button>(R.id.btnBottomLeft),
-            findViewById<Button>(R.id.btnBottomMiddle),
-            findViewById<Button>(R.id.btnBottomRight)
+        gameButtons = arrayOf(
+            findViewById(R.id.btnTopLeft),
+            findViewById(R.id.btnTopMiddle),
+            findViewById(R.id.btnTopRight),
+            findViewById(R.id.btnMiddleLeft),
+            findViewById(R.id.btnMiddle),
+            findViewById(R.id.btnMiddleRight),
+            findViewById(R.id.btnBottomLeft),
+            findViewById(R.id.btnBottomMiddle),
+            findViewById(R.id.btnBottomRight)
         )
 
         // run through all game buttons
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // setup onclick event for the "new game" button
-        setupNewGameButtonOnclick(gameButtons)
+        setupNewGameButtonOnClick()
     }
 
     /**
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
      * it displays the current players symbol, and then passes the turn on to the next player
      * @param currButton The given button for which the on-click event is set up
      */
-    fun setupGameButtonOnClick(currButton:Button) {
+    private fun setupGameButtonOnClick(currButton:Button) {
         // set-up the given button's onclick event
         currButton.setOnClickListener {
             // as long as the button has not already been selected
@@ -69,9 +70,9 @@ class MainActivity : AppCompatActivity() {
      * When called, swaps the turn on to the next player,
      * and display's that players name in the under the tic-tac-toe board
      */
-    fun swapPlayerTurn() {
+    private fun swapPlayerTurn() {
         // get the "game text" text view
-        val gameText:TextView = findViewById<TextView>(R.id.txtGameText)
+        val gameText:TextView = findViewById(R.id.txtGameText)
 
         // if it's currently Player X's turn
         if(playerXTurn) {
@@ -97,11 +98,10 @@ class MainActivity : AppCompatActivity() {
      * When called, sets up the on-click event for the "new game" button,
      * so that when clicked it resets the tic-tac-toe board to it's original state,
      * and restarts the game with Player X as the starting player
-     * @param gameButtons An array containing all 9 of the "game" buttons
      */
-    fun setupNewGameButtonOnclick(gameButtons:Array<Button>) {
+    private fun setupNewGameButtonOnClick() {
         // get the "new game" button
-        val btnNewGame:Button = findViewById<Button>(R.id.btnNewGame)
+        val btnNewGame:Button = findViewById(R.id.btnNewGame)
 
         // set up it's onclick event
         btnNewGame.setOnClickListener {
