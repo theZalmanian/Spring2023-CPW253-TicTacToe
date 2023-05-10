@@ -1,5 +1,5 @@
 # Tic-Tac-Toe
-Basic Tic-Tac-Toe application to demonstrate Android Development
+A basic Android Tic-Tac-Toe app to demonstrate Android Development concepts 
 
 ## Screenshots
 ### **App at start-up**:
