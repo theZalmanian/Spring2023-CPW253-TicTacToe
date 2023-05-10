@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         // set-up the given button's onclick event
         currButton.setOnClickListener {
             // as long as the button has not already been selected
-            if(currButton.text != "X" && currButton.text != "O") {
+            if(currButton.text.equals("")) {
                 // if it's currently Player X's turn
                 if(playerXTurn) {
                     // set the button's text to contain an X
@@ -76,21 +76,18 @@ class MainActivity : AppCompatActivity() {
 
         // if it's currently Player X's turn
         if(playerXTurn) {
-            // pass the turn on to Player O
-            playerXTurn = false
-
-            // display that it is Player O's turn
+            // update the display so it is Player O's turn
             gameText.setText(R.string.player_o_turn)
         }
 
         // otherwise it's currently Player O's turn
         else {
-            // pass the turn on to Player X'
-            playerXTurn = true
-
-            // display that it is Player X's turn
+            // update the display so it is Player X's turn
             gameText.setText(R.string.player_x_turn)
         }
+
+        // pass the turn on to the next player
+        playerXTurn = !playerXTurn
     }
 
 
@@ -107,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         btnNewGame.setOnClickListener {
             // run through all nine game buttons
             for(currButton in gameButtons) {
-                // clear their text
+                // reset their text
                 currButton.text = ""
             }
 
