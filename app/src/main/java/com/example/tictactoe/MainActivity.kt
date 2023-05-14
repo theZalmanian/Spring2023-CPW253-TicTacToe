@@ -105,18 +105,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * When called one of two things will occur:
-     * 1. The current player won the game, at which point the game will end
+     * When called one of three things will occur:
+     * 1. The current player won the game, or the game ended in a tie, at which point the game will end
      * 2. The current player did not win the game, the turn swaps on to the next player,
      * and display's that players name in the TextView under the tic-tac-toe board
      */
     private fun swapPlayerTurn() {
         // if the current player won, end the game
         if(checkIfCurrentPlayerWon()) {
-            endGame()
+            endGame(false)
         }
 
-        // Otherwise, swap the turn to the next player
+        // or if the game ended in a tie, end the game
+        else if(checkIfGameEndedInTie()) {
+            endGame(true)
+        }
+
+        // otherwise, swap the turn to the next player
         else {
             // get the "game text" TextView
             val gameText: TextView = findViewById(R.id.txtGameText)
@@ -227,11 +232,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * When called disables all the "game" buttons, and displays the winning player
-     * in the TextView under the tic-tac-toe board
+     * Checks if the current game has ended in a tie,
+     * and returns true or false accordingly
+     * @return True if the game has ended in a tie; otherwise False
      */
-    private fun endGame() {
-        // run through all game buttons
+    private fun checkIfGameEndedInTie():Boolean {
+        /**
+         * Counter of how many total buttons were clicked
+         */
+        var buttonClicked = 0
+
+        // run through all "game" buttons
+        for(currButton in gameButtons) {
+            // if the current button has been clicked
+            if(!currButton.text.equals("")) {
+                // increment the counter
+                buttonClicked++
+            }
+        }
+
+        // if all 9 buttons were clicked, the game has ended in a tie
+        if(buttonClicked == 9) {
+            return true
+        }
+
+        // otherwise the game is still ongoing
+        return false
+    }
+
+    /**
+     * When called disables all the "game" buttons, and displays if the current player won,
+     * or if the game ended in a tie
+     * @param gameTied Determines the "end game" text displayed in the TextView:
+     * should be True if the game ended in a tie; otherwise False
+     */
+    private fun endGame(gameTied:Boolean) {
+        // run through all "game" buttons
         for(currButton in gameButtons) {
             // disable the current button so players can't click it
             currButton.isEnabled = false
@@ -240,12 +276,19 @@ class MainActivity : AppCompatActivity() {
         // get the "game text" TextView
         val gameText:TextView = findViewById(R.id.txtGameText)
 
-        // display the winner in the "game text" TextView
-        if(playerXTurn) {
-            gameText.setText(R.string.player_x_won)
+        // if the game ended in a tie, alert the players
+        if(gameTied) {
+            gameText.setText(R.string.game_tied)
         }
+
+        // otherwise display the winner in the "game text" TextView
         else {
-            gameText.setText(R.string.player_o_won)
+            if(playerXTurn) {
+                gameText.setText(R.string.player_x_won)
+            }
+            else {
+                gameText.setText(R.string.player_o_won)
+            }
         }
     }
 }
