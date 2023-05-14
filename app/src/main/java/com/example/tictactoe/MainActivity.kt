@@ -115,4 +115,97 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun didCurrentPlayerWin() {
+        // get all the game buttons
+        val btnTopLeft:Button = findViewById(R.id.btnTopLeft)
+        val btnTopMiddle:Button = findViewById(R.id.btnTopMiddle)
+        val btnTopRight:Button = findViewById(R.id.btnTopRight)
+        val btnMiddleLeft:Button = findViewById(R.id.btnMiddleLeft)
+        val btnMiddle:Button = findViewById(R.id.btnMiddle)
+        val btnMiddleRight:Button = findViewById(R.id.btnMiddleRight)
+        val btnBottomLeft:Button = findViewById(R.id.btnBottomLeft)
+        val btnBottomMiddle:Button = findViewById(R.id.btnBottomMiddle)
+        val btnBottomRight:Button = findViewById(R.id.btnBottomRight)
+
+        var playerSymbol:String = "" // setup symbol
+
+        // set it to the current player's symbol
+        if(playerXTurn) {
+            playerSymbol += R.string.x_symbol
+        }
+        else {
+            playerSymbol += R.string.o_symbol
+        }
+
+        // check if the current player won the game horizontally
+        if(btnTopLeft.text.equals(playerSymbol)
+            && btnTopMiddle.text.equals(playerSymbol)
+            && btnTopRight.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        else if(btnMiddleLeft.text.equals(playerSymbol)
+                && btnMiddle.text.equals(playerSymbol)
+                && btnTopRight.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        else if(btnBottomLeft.text.equals(playerSymbol)
+                && btnBottomMiddle.text.equals(playerSymbol)
+                && btnBottomRight.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        // check if the current player won the game vertically
+        else if(btnTopLeft.text.equals(playerSymbol)
+                && btnMiddleLeft.text.equals(playerSymbol)
+                && btnBottomLeft.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        else if(btnTopMiddle.text.equals(playerSymbol)
+                && btnMiddle.text.equals(playerSymbol)
+                && btnBottomMiddle.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        else if(btnTopRight.text.equals(playerSymbol)
+                && btnMiddleRight.text.equals(playerSymbol)
+                && btnBottomRight.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        // check if the current player won the game diagonally
+        else if(btnTopLeft.text.equals(playerSymbol)
+                && btnMiddle.text.equals(playerSymbol)
+                && btnBottomRight.text.equals(playerSymbol)) {
+            endGame()
+        }
+
+        else if(btnTopRight.text.equals(playerSymbol)
+                && btnMiddle.text.equals(playerSymbol)
+                && btnBottomLeft.text.equals(playerSymbol)) {
+            endGame()
+        }
+    }
+
+    private fun endGame() {
+        // run through all game buttons
+        for(currButton in gameButtons) {
+            // disable the current button so user can't click it
+            currButton.isEnabled = false
+        }
+
+        // get the "game text" text view
+        val gameText:TextView = findViewById(R.id.txtGameText)
+
+        // display the winner in the "game text" text view
+        if(playerXTurn) {
+            gameText.setText(R.string.player_x_won)
+        }
+        else {
+            gameText.setText(R.string.player_o_won)
+        }
+    }
 }
