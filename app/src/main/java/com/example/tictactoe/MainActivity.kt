@@ -6,14 +6,23 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var gameButtons: Array<Button> // array to hold all game buttons
-    private var playerXTurn = true // it's player X's turn at start of game
+    /**
+     * An array containing all the "game" buttons
+     */
+    private lateinit var gameButtons: Array<Button>
+
+    /**
+     * Keeps track of which player's turn it is
+     *
+     * It's always player X's turn at the start of the game
+     */
+    private var playerXTurn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // setup array of all game buttons
+        // setup array of all "game" buttons
         gameButtons = arrayOf(
             findViewById(R.id.btnTopLeft),
             findViewById(R.id.btnTopMiddle),
@@ -26,8 +35,9 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.btnBottomRight)
         )
 
-        // run through all game buttons
+        // run through all the "game" buttons
         for(currButton in gameButtons) {
+            // set up the current buttons onclick event
             setupGameButtonOnClick(currButton)
         }
 
@@ -47,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             if(currButton.text.equals("")) {
                 // if it's currently Player X's turn
                 if(playerXTurn) {
-                    // set the button's text to contain an X
+                    // display an X on the button
                     currButton.setText(R.string.x_symbol)
 
                     // swap the turn over to Player O
@@ -56,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
                 // otherwise it's currently Player O's turn
                 else {
-                    // set the button's text to contain an O
+                    // display an O on the button
                     currButton.setText(R.string.o_symbol)
 
                     // swap the turn over to Player X
@@ -65,31 +75,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    /**
-     * When called, swaps the turn on to the next player,
-     * and display's that players name in the under the tic-tac-toe board
-     */
-    private fun swapPlayerTurn() {
-        // get the "game text" text view
-        val gameText:TextView = findViewById(R.id.txtGameText)
-
-        // if it's currently Player X's turn
-        if(playerXTurn) {
-            // update the display so it is Player O's turn
-            gameText.setText(R.string.player_o_turn)
-        }
-
-        // otherwise it's currently Player O's turn
-        else {
-            // update the display so it is Player X's turn
-            gameText.setText(R.string.player_x_turn)
-        }
-
-        // pass the turn on to the next player
-        playerXTurn = !playerXTurn
-    }
-
 
     /**
      * When called, sets up the on-click event for the "new game" button,
@@ -106,6 +91,9 @@ class MainActivity : AppCompatActivity() {
             for(currButton in gameButtons) {
                 // reset their text
                 currButton.text = ""
+
+                // enable them so the players can click them again
+                currButton.isEnabled = true
             }
 
             // if it is currently Player O's turn
@@ -116,7 +104,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun didCurrentPlayerWin() {
+    /**
+     * When called one of two things will occur:
+     * 1. The current player won the game, at which point the game will end
+     * 2. The current player did not win the game, the turn swaps on to the next player,
+     * and display's that players name in the TextView under the tic-tac-toe board
+     */
+    private fun swapPlayerTurn() {
+        // if the current player won, end the game
+        if(checkIfCurrentPlayerWon()) {
+            endGame()
+        }
+
+        // Otherwise, swap the turn to the next player
+        else {
+            // get the "game text" TextView
+            val gameText: TextView = findViewById(R.id.txtGameText)
+
+            // if it's currently Player X's turn
+            if (playerXTurn) {
+                // update the display so it is Player O's turn
+                gameText.setText(R.string.player_o_turn)
+            }
+
+            // otherwise it's currently Player O's turn
+            else {
+                // update the display so it is Player X's turn
+                gameText.setText(R.string.player_x_turn)
+            }
+
+            // pass the turn on to the next player
+            playerXTurn = !playerXTurn
+        }
+    }
+
+    /**
+     * Checks if the current player's latest move caused them to win the game,
+     * and returns true or false accordingly
+     * @return True if the current player won the game; otherwise False
+     */
+    private fun checkIfCurrentPlayerWon():Boolean {
         // get all the game buttons
         val btnTopLeft:Button = findViewById(R.id.btnTopLeft)
         val btnTopMiddle:Button = findViewById(R.id.btnTopMiddle)
@@ -128,79 +155,92 @@ class MainActivity : AppCompatActivity() {
         val btnBottomMiddle:Button = findViewById(R.id.btnBottomMiddle)
         val btnBottomRight:Button = findViewById(R.id.btnBottomRight)
 
-        var playerSymbol:String = "" // setup symbol
-
-        // set it to the current player's symbol
+        /**
+         * Keeps track of the current player's symbol:
+         * either "X" or "O"
+         */
+        val playerSymbol: String
         if(playerXTurn) {
-            playerSymbol += R.string.x_symbol
+            playerSymbol = "X"
         }
         else {
-            playerSymbol += R.string.o_symbol
+            playerSymbol = "O"
         }
+
+        /**
+         * Flag to keep track of if the current player won the game
+         */
+        var currPlayerWon = false
 
         // check if the current player won the game horizontally
         if(btnTopLeft.text.equals(playerSymbol)
             && btnTopMiddle.text.equals(playerSymbol)
             && btnTopRight.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         else if(btnMiddleLeft.text.equals(playerSymbol)
                 && btnMiddle.text.equals(playerSymbol)
-                && btnTopRight.text.equals(playerSymbol)) {
-            endGame()
+                && btnMiddleRight.text.equals(playerSymbol)) {
+            currPlayerWon = true
         }
 
         else if(btnBottomLeft.text.equals(playerSymbol)
                 && btnBottomMiddle.text.equals(playerSymbol)
                 && btnBottomRight.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         // check if the current player won the game vertically
         else if(btnTopLeft.text.equals(playerSymbol)
                 && btnMiddleLeft.text.equals(playerSymbol)
                 && btnBottomLeft.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         else if(btnTopMiddle.text.equals(playerSymbol)
                 && btnMiddle.text.equals(playerSymbol)
                 && btnBottomMiddle.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         else if(btnTopRight.text.equals(playerSymbol)
                 && btnMiddleRight.text.equals(playerSymbol)
                 && btnBottomRight.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         // check if the current player won the game diagonally
         else if(btnTopLeft.text.equals(playerSymbol)
                 && btnMiddle.text.equals(playerSymbol)
                 && btnBottomRight.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
 
         else if(btnTopRight.text.equals(playerSymbol)
                 && btnMiddle.text.equals(playerSymbol)
                 && btnBottomLeft.text.equals(playerSymbol)) {
-            endGame()
+            currPlayerWon = true
         }
+
+        return currPlayerWon
     }
 
+    /**
+     * When called disables all the "game" buttons, and displays the winning player
+     * in the TextView under the tic-tac-toe board
+     */
     private fun endGame() {
         // run through all game buttons
         for(currButton in gameButtons) {
-            // disable the current button so user can't click it
+            // disable the current button so players can't click it
             currButton.isEnabled = false
         }
 
-        // get the "game text" text view
+        // get the "game text" TextView
         val gameText:TextView = findViewById(R.id.txtGameText)
 
-        // display the winner in the "game text" text view
+        // display the winner in the "game text" TextView
         if(playerXTurn) {
             gameText.setText(R.string.player_x_won)
         }
